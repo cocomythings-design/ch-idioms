@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="CH Idioms">
+<meta name="theme-color" content="#e8006e">
+<title>CH Formació – Idioms B2</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;600;700&display=swap');
+
+  :root {
+    --pink: #e8006e;
+    --pink-light: rgba(232,0,110,0.10);
+    --pink-glow: rgba(232,0,110,0.22);
+    --bg: #f5f0f0;
+    --white: #ffffff;
+    --text: #1a1a1a;
+    --muted: #999;
+    --radius: 18px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #e0d0d6;
+    font-family: 'DM Sans', Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+  }
+
+  /* ── FRAME ── */
+  .frame {
+    width: 100%;
+    max-width: 480px;
+    min-height: 100vh;
+    background: var(--bg);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 60px rgba(0,0,0,0.12);
+  }
+
+  @media (max-width: 500px) {
+    body { background: var(--bg); }
+    .frame { box-shadow: none; }
+  }
+
+  /* ── SCREENS ── */
+  .screen { display: none; flex-direction: column; min-height: 100vh; }
+  .screen.active { display: flex; }
+
+  /* ══════════════════════════════
+     LOGIN SCREEN
+  ══════════════════════════════ */
+  #screen-login .hero {
+    text-align: center;
+    padding: clamp(36px, 8vw, 60px) 30px 28px;
+    position: relative;
+  }
+  #screen-login .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 320px; height: 320px;
+    background: radial-gradient(circle, var(--pink-glow) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .ch-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--pink);
+    color: white;
+    width: 70px; height: 70px;
+    border-radius: 50%;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 22px;
+    font-family: 'DM Sans', Arial, sans-serif;
+    box-shadow: 0 4px 24px var(--pink-glow);
+  }
+  .tagline {
+    font-size: 18px;
+    color: var(--pink);
+    font-style: italic;
+    font-weight: 600;
+    font-family: 'DM Serif Display', Georgia, serif;
+    margin-bottom: 8px;
+  }
+  .welcome-text {
+    font-size: 26px;
+    color: #aaa;
+    font-weight: 300;
+    margin-bottom: 2px;
+  }
+  .brand-name {
+    font-size: clamp(26px, 7vw, 34px);
+    color: var(--pink);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  .rocket {
+    font-size: 26px;
+    display: block;
+    text-align: right;
+    padding-right: 44px;
+    margin-bottom: 28px;
+  }
+  .form-card {
+    margin: 0 20px 32px;
+    border: 1.5px solid var(--pink);
+    border-radius: var(--radius);
+    background: var(--white);
+    padding: 26px 22px;
+  }
+  .field-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--pink);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 7px;
+  }
+  .field-input {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #f0d0da;
+    padding: 8px 0;
+    font-size: 16px;
+    color: var(--text);
+    background: transparent;
+    outline: none;
+    margin-bottom: 22px;
+    font-family: 'DM Sans', Arial, sans-serif;
+  }
+  .field-input:focus { border-bottom-color: var(--pink); }
+  .start-btn {
+    display: block;
+    width: 100%;
+    background: var(--pink);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 17px;
+    font-weight: 700;
+    font-family: 'DM Sans', Arial, sans-serif;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-top: 6px;
+    transition: opacity .15s, transform .1s;
+    box-shadow: 0 6px 20px var(--pink-glow);
+  }
+  .start-btn:active { opacity: .85; transform: scale(.98); }
+
+  /* ══════════════════════════════
+     QUIZ SCREEN
+  ══════════════════════════════ */
+  #screen-quiz {
+    padding: 0 0 32px;
+  }
+
+  /* top bar */
+  .quiz-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 22px 10px;
+  }
+  .quiz-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .ch-badge-sm {
+    background: var(--pink);
+    color: white;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: 'DM Sans', Arial, sans-serif;
+  }
+  .quiz-brand {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--pink);
+    letter-spacing: 0.5px;
+  }
+  .quiz-brand span {
+    display: block;
+    font-size: 10px;
+    color: var(--muted);
+    font-weight: 400;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .progress-wrap {
+    font-size: 12px;
+    color: var(--muted);
+    text-align: right;
+  }
+  .progress-num {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--pink);
+    display: block;
+  }
+
+  /* progress bar */
+
+  /* idiom card */
+  .idiom-section {
+    margin: 22px 20px 0;
+    position: relative;
+  }
+  .idiom-section::before {
+    content: '';
+    position: absolute;
+    top: -10px; left: 50%;
+    transform: translateX(-50%);
+    width: 260px; height: 200px;
+    background: radial-gradient(circle, var(--pink-glow) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .idiom-card {
+    background: var(--white);
+    border: 1.5px solid var(--pink);
+    border-radius: var(--radius);
+    padding: 30px 22px;
+    text-align: center;
+    position: relative;
+  }
+  .idiom-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--pink);
+    margin-bottom: 14px;
+  }
+  .idiom-text {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-size: clamp(20px, 5.5vw, 26px);
+    color: var(--text);
+    line-height: 1.3;
+    font-style: italic;
+  }
+
+  /* ── TIMER ── */
+  .timer-wrap {
+    margin: 10px 22px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .timer-bar-bg {
+    flex: 1;
+    height: 6px;
+    background: #f0d0da;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .timer-bar-fill {
+    height: 100%;
+    background: var(--pink);
+    border-radius: 3px;
+    transition: width 1s linear, background .3s;
+    width: 100%;
+  }
+  .timer-bar-fill.urgent { background: #e84040; }
+  .timer-num {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--pink);
+    min-width: 28px;
+    text-align: right;
+    transition: color .3s;
+  }
+  .timer-num.urgent { color: #e84040; }
+
+  /* ── FAIL OVERLAY ── */
+  .fail-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(245,240,240,0.97);
+    z-index: 100;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px;
+    animation: fadeUp .2s ease;
+  }
+  .fail-overlay.show { display: flex; }
+  .fail-title {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-size: clamp(56px, 18vw, 80px);
+    font-weight: 700;
+    color: #e84040;
+    letter-spacing: 2px;
+    line-height: 1;
+    margin-bottom: 12px;
+    animation: pulse .5s ease infinite alternate;
+  }
+  .fail-sub {
+    font-size: 16px;
+    color: var(--muted);
+    margin-bottom: 36px;
+  }
+  .fail-btn {
+    background: var(--pink);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 16px 40px;
+    font-size: 16px;
+    font-weight: 700;
+    font-family: 'DM Sans', Arial, sans-serif;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 6px 20px var(--pink-glow);
+  }
+  @keyframes pulse {
+    from { transform: scale(1); }
+    to   { transform: scale(1.04); }
+  }
+
+  /* question */
+  .question-label {
+    margin: 22px 22px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  /* options */
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 0 20px;
+  }
+  .option-btn {
+    background: var(--white);
+    border: 1.5px solid #e8d0d8;
+    border-radius: 14px;
+    padding: 14px 16px;
+    font-size: clamp(13px, 3.5vw, 15px);
+    color: var(--text);
+    font-family: 'DM Sans', Arial, sans-serif;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color .15s, background .15s, transform .1s;
+    line-height: 1.4;
+  }
+  .option-btn:hover:not(:disabled) {
+    border-color: var(--pink);
+    background: var(--pink-light);
+    transform: translateX(3px);
+  }
+  .option-btn.correct {
+    border-color: #00b86b;
+    background: rgba(0,184,107,0.08);
+    color: #007a48;
+    font-weight: 600;
+  }
+  .option-btn.wrong {
+    border-color: #e84040;
+    background: rgba(232,64,64,0.07);
+    color: #c02020;
+  }
+  .option-btn:disabled { cursor: default; }
+
+  /* feedback */
+  .feedback-box {
+    margin: 16px 20px 0;
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    display: none;
+    animation: fadeUp .25s ease;
+    text-align: center;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.success {
+    background: rgba(0,184,107,0.10);
+    border: 1.5px solid #00b86b;
+  }
+  .feedback-box.error {
+    background: rgba(232,64,64,0.07);
+    border: 1.5px solid #e84040;
+  }
+  .feedback-emoji {
+    font-size: 26px;
+    margin-bottom: 6px;
+    display: block;
+  }
+  .feedback-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    font-family: 'DM Serif Display', Georgia, serif;
+  }
+  .feedback-box.success .feedback-title { color: #007a48; }
+  .feedback-box.error .feedback-title { color: #c02020; }
+  .feedback-body {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  .next-btn {
+    margin: 16px 20px 0;
+    display: none;
+    width: calc(100% - 40px);
+    background: var(--pink);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 15px;
+    font-size: 16px;
+    font-weight: 700;
+    font-family: 'DM Sans', Arial, sans-serif;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity .15s, transform .1s;
+    box-shadow: 0 6px 20px var(--pink-glow);
+  }
+  .next-btn.show { display: block; }
+  .next-btn:active { opacity: .85; transform: scale(.98); }
+
+  /* score display */
+  .score-chip {
+    background: var(--pink-light);
+    border: 1px solid var(--pink);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--pink);
+    display: inline-block;
+    margin-top: 2px;
+  }
+
+  /* ══════════════════════════════
+     RESULTS SCREEN
+  ══════════════════════════════ */
+  #screen-results {
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+    text-align: center;
+  }
+  #screen-results .hero-glow {
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 350px; height: 350px;
+    background: radial-gradient(circle, var(--pink-glow) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .result-badge {
+    font-size: 64px;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .result-title {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-size: 32px;
+    color: var(--pink);
+    margin-bottom: 8px;
+  }
+  .result-name {
+    font-size: 18px;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+  .result-card {
+    background: var(--white);
+    border: 1.5px solid var(--pink);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    width: 100%;
+    margin-bottom: 24px;
+  }
+  .result-score {
+    font-size: clamp(42px, 12vw, 56px);
+    font-weight: 700;
+    color: var(--pink);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .result-score span {
+    font-size: 22px;
+    color: var(--muted);
+    font-weight: 400;
+  }
+  .result-label {
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+  .result-stats {
+    display: flex;
+    justify-content: space-around;
+    border-top: 1px solid #f0d0da;
+    padding-top: 18px;
+  }
+  .stat { text-align: center; }
+  .stat-num { font-size: 22px; font-weight: 700; color: var(--text); }
+  .stat-lbl { font-size: 11px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+  .restart-btn {
+    width: 100%;
+    background: var(--pink);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 17px;
+    font-weight: 700;
+    font-family: 'DM Sans', Arial, sans-serif;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 6px 20px var(--pink-glow);
+    transition: opacity .15s;
+  }
+  .restart-btn:active { opacity: .85; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+</style>
+</head>
+<body>
+<div class="frame">
+
+  <!-- ══ LOGIN ══ -->
+  <div class="screen active" id="screen-login">
+    <div class="hero">
+      <div class="ch-badge">ch</div>
+      <div class="tagline">Successful English Teaching</div>
+      <div class="welcome-text">Welcome to</div>
+      <div class="brand-name">CH Formació</div>
+    </div>
+    <span class="rocket">🚀</span>
+    <div class="form-card">
+      <div class="field-label">First Name</div>
+      <input class="field-input" id="inp-first" type="text" placeholder="">
+      <div class="field-label">Last Name</div>
+      <input class="field-input" id="inp-last" type="text" placeholder="">
+      <button class="start-btn" onclick="startQuiz()">Start</button>
+    </div>
+  </div>
+
+  <!-- ══ QUIZ ══ -->
+  <div class="screen" id="screen-quiz">
+    <div class="quiz-topbar">
+      <div class="quiz-logo">
+        <div class="ch-badge-sm">ch</div>
+        <div class="quiz-brand">
+          CH Formació
+          <span>B2 Idioms</span>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button id="mute-btn" onclick="toggleMute()" title="Toggle sound" style="
+          background:none;border:1.5px solid #e8d0d8;border-radius:50%;
+          width:34px;height:34px;font-size:16px;cursor:pointer;
+          display:flex;align-items:center;justify-content:center;
+          transition:border-color .15s;flex-shrink:0;">🔊</button>
+        <div class="progress-wrap">
+          <span class="progress-num" id="q-num">1/20</span>
+          <div class="score-chip" id="score-chip">Score: 0</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="timer-wrap">
+      <div class="timer-bar-bg">
+        <div class="timer-bar-fill" id="timer-bar"></div>
+      </div>
+      <div class="timer-num" id="timer-num">30</div>
+    </div>
+
+    <div class="idiom-section">
+      <div class="idiom-card">
+        <div class="idiom-label">Idiom</div>
+        <div class="idiom-text" id="idiom-display"></div>
+      </div>
+    </div>
+
+    <div class="question-label">Which sentence uses it correctly?</div>
+
+    <div class="options" id="options-wrap"></div>
+
+    <div class="feedback-box" id="feedback-box">
+      <span class="feedback-emoji" id="feedback-emoji"></span>
+      <div class="feedback-title" id="feedback-title"></div>
+      <div class="feedback-body" id="feedback-body"></div>
+    </div>
+
+    <button class="next-btn" id="next-btn" onclick="nextQuestion()">Next →</button>
+  </div>
+
+  <!-- ══ RESULTS ══ -->
+  <div class="screen" id="screen-results">
+    <div class="hero-glow"></div>
+    <span class="result-badge">🏆</span>
+    <div class="result-title">Well done!</div>
+    <div class="result-name" id="result-name"></div>
+    <div class="result-card">
+      <div class="result-score" id="result-score">0 <span>/ 50</span></div>
+      <div class="result-label">correct answers</div>
+      <div class="result-stats">
+        <div class="stat">
+          <div class="stat-num" id="stat-correct">0</div>
+          <div class="stat-lbl">Correct ✓</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num" id="stat-wrong">0</div>
+          <div class="stat-lbl">Wrong ✗</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num" id="stat-pct">0%</div>
+          <div class="stat-lbl">Score</div>
+        </div>
+      </div>
+    </div>
+    <button class="restart-btn" onclick="restartQuiz()">Try Again 🚀</button>
+  </div>
+
+  <!-- ══ LOADING OVERLAY ══ -->
+  <div id="loading-overlay" style="display:none;position:fixed;inset:0;background:rgba(245,240,240,0.95);z-index:200;flex-direction:column;align-items:center;justify-content:center;gap:16px;">
+    <div style="width:44px;height:44px;border:3px solid #f0d0da;border-top-color:#e8006e;border-radius:50%;animation:spin .7s linear infinite;"></div>
+    <div style="font-size:14px;color:#e8006e;font-weight:700;letter-spacing:2px;text-transform:uppercase;font-family:'DM Sans',Arial,sans-serif;">Loading...</div>
+  </div>
+
+  <!-- ══ FAIL OVERLAY ══ -->
+  <div class="fail-overlay" id="fail-overlay">
+    <div class="fail-title">FAIL!</div>
+    <div class="fail-sub">Time's up! Try again from the beginning.</div>
+    <button class="fail-btn" onclick="restartFromFail()">Try Again 🚀</button>
+  </div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// DATA – 50 B2 FCE Idioms
+// Each: idiom, correct sentence, 3 wrong sentences, explanation
+// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
+// GOOGLE SHEETS LOADER
+// ═══════════════════════════════════════════════════════
+const SHEET_ID  = '1WmuYhVjyBBTc72MpIhXKa4xUFjV6TChWu8z-piq6NYg';
+const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSwdZ5YqRbdtmndV4A9Kk3V0HR8OLkhDSoamWpOlPLAvmlRNlUD_VBBeXvrBw-mnPwOie6XDQmsKk4b/pub?gid=0&single=true&output=csv';
+
+let IDIOMS = []; // loaded from Google Sheets
+
+// ═══════════════════════════════════
+// STATE
+// ═══════════════════════════════════
+let playerName = '';
+let questions = [];
+let current = 0;
+let score = 0;
+let timerInterval = null;
+let timeLeft = 30;
+const QUIZ_LENGTH = 20;
+const TIMER_SECONDS = 30;
+
+function shuffle(arr) {
+  return [...arr].sort(() => Math.random() - 0.5);
+}
+
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  const result = [];
+  // Skip header row (row 0)
+  for (let i = 1; i < lines.length; i++) {
+    const cols = splitCSVLine(lines[i]);
+    if (!cols[0] || !cols[0].trim()) continue;
+    result.push({
+      idiom:       cols[0].trim(),
+      options:     [cols[1], cols[2], cols[3], cols[4]].map(s => (s||'').trim()),
+      correct:     0,
+      explanation: (cols[5]||'').trim()
+    });
+  }
+  return result;
+}
+
+function splitCSVLine(line) {
+  const result = [];
+  let cur = '', inQuotes = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') {
+      if (inQuotes && line[i+1] === '"') { cur += '"'; i++; }
+      else inQuotes = !inQuotes;
+    } else if (ch === ',' && !inQuotes) {
+      result.push(cur); cur = '';
+    } else cur += ch;
+  }
+  result.push(cur);
+  return result;
+}
+
+async function loadFromSheets() {
+  try {
+    const res = await fetch(SHEET_URL, { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const text = await res.text();
+    // Sanity check: Google returns HTML error pages sometimes
+    if (text.trim().startsWith('<!')) throw new Error('Got HTML instead of CSV');
+    const parsed = parseCSV(text);
+    if (parsed.length > 0) {
+      IDIOMS = parsed;
+      return true;
+    }
+    throw new Error('Sheet is empty');
+  } catch(e) {
+    console.error('Sheet load error:', e);
+    return false;
+  }
+}
+
+function showLoading(show) {
+  document.getElementById('loading-overlay').style.display = show ? 'flex' : 'none';
+}
+
+async function startQuiz() {
+  const first = document.getElementById('inp-first').value.trim();
+  const last  = document.getElementById('inp-last').value.trim();
+  if (!first) { document.getElementById('inp-first').focus(); return; }
+  playerName = first + (last ? ' ' + last : '');
+
+  showLoading(true);
+  const ok = await loadFromSheets();
+  showLoading(false);
+
+  if (!ok || IDIOMS.length === 0) {
+    alert('⚠️ Could not load content from Google Sheets.\n\nCheck that the Sheet is public (Anyone with the link → Viewer) and has data.');
+    return;
+  }
+
+  questions = shuffle(IDIOMS).slice(0, Math.min(QUIZ_LENGTH, IDIOMS.length)).map(q => {
+    const opts = shuffle(q.options.map((text, i) => ({ text, isCorrect: i === q.correct })));
+    return { ...q, shuffledOptions: opts };
+  });
+
+  current = 0;
+  score = 0;
+
+  initAudio();
+  showScreen('screen-quiz');
+  loadQuestion();
+}
+
+function startTimer() {
+  clearInterval(timerInterval);
+  timeLeft = TIMER_SECONDS;
+  updateTimerUI();
+
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    updateTimerUI();
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      triggerFail();
+    }
+  }, 1000);
+}
+
+function stopTimer() {
+  clearInterval(timerInterval);
+}
+
+function updateTimerUI() {
+  const bar = document.getElementById('timer-bar');
+  const num = document.getElementById('timer-num');
+  const pct = (timeLeft / TIMER_SECONDS) * 100;
+  bar.style.width = pct + '%';
+  num.textContent = timeLeft;
+  const urgent = timeLeft <= 10;
+  bar.className = 'timer-bar-fill' + (urgent ? ' urgent' : '');
+  num.className = 'timer-num' + (urgent ? ' urgent' : '');
+  if (urgent && timeLeft > 0) playTick();
+}
+
+function triggerFail() {
+  stopTimer();
+  stopBgMusic();
+  playSoundFail();
+  document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+  document.getElementById('fail-overlay').classList.add('show');
+}
+
+function restartFromFail() {
+  document.getElementById('fail-overlay').classList.remove('show');
+  questions = shuffle(IDIOMS).slice(0, QUIZ_LENGTH).map(q => {
+    const opts = shuffle(q.options.map((text, i) => ({ text, isCorrect: i === q.correct })));
+    return { ...q, shuffledOptions: opts };
+  });
+  current = 0;
+  score = 0;
+  loadQuestion();
+}
+
+function loadQuestion() {
+  const q = questions[current];
+
+  document.getElementById('q-num').textContent = `${current + 1}/${QUIZ_LENGTH}`;
+  document.getElementById('score-chip').textContent = `Score: ${score}`;
+  document.getElementById('idiom-display').textContent = `"${q.idiom}"`;
+
+  const wrap = document.getElementById('options-wrap');
+  wrap.innerHTML = '';
+  q.shuffledOptions.forEach((opt) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.textContent = opt.text;
+    btn.onclick = () => answer(btn, opt.isCorrect, q.explanation);
+    wrap.appendChild(btn);
+  });
+
+  // Reset feedback
+  document.getElementById('feedback-box').className = 'feedback-box';
+  document.getElementById('next-btn').className = 'next-btn';
+
+  startTimer();
+  restartBgMusic();
+}
+
+const CORRECT_MSGS = ["Awesome! 🎉", "Nailed it! ✨", "Brilliant! 🌟", "Spot on! 🎯", "Fantastic! 🔥"];
+
+function answer(btn, isCorrect, explanation) {
+  stopTimer();
+  stopBgMusic();
+  document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+
+  const fb    = document.getElementById('feedback-box');
+  const emoji = document.getElementById('feedback-emoji');
+  const title = document.getElementById('feedback-title');
+  const body  = document.getElementById('feedback-body');
+  const next  = document.getElementById('next-btn');
+
+  if (isCorrect) {
+    btn.classList.add('correct');
+    score++;
+    playSoundCorrect();
+    fb.className = 'feedback-box success show';
+    emoji.textContent = '✅';
+    title.textContent = CORRECT_MSGS[Math.floor(Math.random() * CORRECT_MSGS.length)];
+    body.textContent = '';
+  } else {
+    btn.classList.add('wrong');
+    playSoundWrong();
+    document.querySelectorAll('.option-btn').forEach(b => {
+      if (questions[current].shuffledOptions.find(o => b.textContent === o.text && o.isCorrect))
+        b.classList.add('correct');
+    });
+    fb.className = 'feedback-box error show';
+    emoji.textContent = '❌';
+    title.textContent = 'Nope!';
+    body.textContent = explanation;
+  }
+
+  next.className = 'next-btn show';
+  document.getElementById('score-chip').textContent = `Score: ${score}`;
+}
+
+function nextQuestion() {
+  current++;
+  if (current >= QUIZ_LENGTH) {
+    showResults();
+  } else {
+    loadQuestion();
+  }
+}
+
+function showResults() {
+  stopTimer();
+  stopBgMusic();
+  playSoundWin();
+  showScreen('screen-results');
+  const pct = Math.round((score / QUIZ_LENGTH) * 100);
+  document.getElementById('result-name').textContent = playerName;
+  document.getElementById('result-score').innerHTML = `${score} <span>/ ${QUIZ_LENGTH}</span>`;
+  document.getElementById('stat-correct').textContent = score;
+  document.getElementById('stat-wrong').textContent = QUIZ_LENGTH - score;
+  document.getElementById('stat-pct').textContent = pct + '%';
+
+  const badge = document.querySelector('.result-badge');
+  if (pct >= 80) badge.textContent = '🏆';
+  else if (pct >= 60) badge.textContent = '⭐';
+  else badge.textContent = '📚';
+}
+
+function restartQuiz() {
+  stopTimer();
+  stopBgMusic();
+  showScreen('screen-login');
+  document.getElementById('inp-first').value = '';
+  document.getElementById('inp-last').value = '';
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ═══════════════════════════════════════════════════════
+// AUDIO ENGINE – Electronic / House style
+// ═══════════════════════════════════════════════════════
+let audioCtx = null;
+let masterGain = null;
+let isMuted = false;
+let bgPlaying = false;
+let loopScheduler = null;
+let loopNextTime = 0;
+
+const BPM  = 126;
+const BEAT = 60 / BPM;
+const BAR  = BEAT * 4;
+const LOOK_AHEAD = BAR * 1.5;
+
+function initAudio() {
+  if (audioCtx) return;
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  masterGain = audioCtx.createGain();
+  masterGain.gain.value = 0.55;
+  masterGain.connect(audioCtx.destination);
+}
+
+function toggleMute() {
+  isMuted = !isMuted;
+  if (masterGain) masterGain.gain.value = isMuted ? 0 : 0.55;
+  document.getElementById('mute-btn').textContent = isMuted ? '🔇' : '🔊';
+}
+
+function semToFreq(s, base = 261.63) {
+  return base * Math.pow(2, s / 12);
+}
+
+// ── Low-level synth primitives ──
+
+function synthNote(freq, t, dur, type, vol, atk = 0.005, rel = 0.08) {
+  if (!audioCtx) return;
+  const osc = audioCtx.createOscillator();
+  const g   = audioCtx.createGain();
+  osc.type = type;
+  osc.frequency.value = freq;
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(vol, t + atk);
+  g.gain.setValueAtTime(vol, t + dur - rel);
+  g.gain.linearRampToValueAtTime(0, t + dur);
+  osc.connect(g); g.connect(masterGain);
+  osc.start(t); osc.stop(t + dur + 0.02);
+}
+
+function noiseBuffer(secs) {
+  const buf  = audioCtx.createBuffer(1, Math.ceil(audioCtx.sampleRate * secs), audioCtx.sampleRate);
+  const data = buf.getChannelData(0);
+  for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+  return buf;
+}
+
+// ── Drum machines ──
+
+function kick(t) {
+  if (!audioCtx) return;
+  const osc = audioCtx.createOscillator();
+  const g   = audioCtx.createGain();
+  const dist = audioCtx.createWaveShaper();
+  const curve = new Float32Array(256);
+  for (let i = 0; i < 256; i++) { const x = i/128-1; curve[i] = x < 0 ? -Math.pow(-x,0.5) : Math.pow(x,0.5); }
+  dist.curve = curve;
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(200, t);
+  osc.frequency.exponentialRampToValueAtTime(38, t + 0.18);
+  g.gain.setValueAtTime(0.9, t);
+  g.gain.exponentialRampToValueAtTime(0.001, t + 0.28);
+  osc.connect(dist); dist.connect(g); g.connect(masterGain);
+  osc.start(t); osc.stop(t + 0.3);
+}
+
+function clap(t) {
+  if (!audioCtx) return;
+  [0, 0.012, 0.024].forEach(offset => {
+    const src  = audioCtx.createBufferSource();
+    const g    = audioCtx.createGain();
+    const filt = audioCtx.createBiquadFilter();
+    src.buffer  = noiseBuffer(0.12);
+    filt.type   = 'bandpass';
+    filt.frequency.value = 1200;
+    filt.Q.value = 0.8;
+    g.gain.setValueAtTime(0.35, t + offset);
+    g.gain.exponentialRampToValueAtTime(0.001, t + offset + 0.1);
+    src.connect(filt); filt.connect(g); g.connect(masterGain);
+    src.start(t + offset);
+  });
+}
+
+function closedHH(t, vol = 0.18) {
+  if (!audioCtx) return;
+  const src  = audioCtx.createBufferSource();
+  const g    = audioCtx.createGain();
+  const filt = audioCtx.createBiquadFilter();
+  src.buffer = noiseBuffer(0.04);
+  filt.type  = 'highpass'; filt.frequency.value = 9000;
+  g.gain.setValueAtTime(vol, t);
+  g.gain.exponentialRampToValueAtTime(0.001, t + 0.035);
+  src.connect(filt); filt.connect(g); g.connect(masterGain);
+  src.start(t);
+}
+
+function openHH(t) {
+  if (!audioCtx) return;
+  const src  = audioCtx.createBufferSource();
+  const g    = audioCtx.createGain();
+  const filt = audioCtx.createBiquadFilter();
+  src.buffer = noiseBuffer(0.18);
+  filt.type  = 'highpass'; filt.frequency.value = 8000;
+  g.gain.setValueAtTime(0.14, t);
+  g.gain.exponentialRampToValueAtTime(0.001, t + 0.16);
+  src.connect(filt); filt.connect(g); g.connect(masterGain);
+  src.start(t);
+}
+
+// ── Bass synth (pumping house bass) ──
+// Pattern in semitones from A1 (55 Hz): repeating 2-bar motif
+const BASS_PATTERN = [
+  // [semi, beatOffset]  (A minor feel)
+  [0,0],[0,0.5],[0,1],[3,1.5],[5,2],[3,2.5],[0,3],[0,3.5],
+  [0,4],[0,4.5],[7,5],[5,5.5],[3,6],[0,6.5],[3,7],[5,7.5],
+];
+
+function scheduleBassBeat(t, semi) {
+  const freq = semToFreq(semi, 55);
+  const osc  = audioCtx.createOscillator();
+  const g    = audioCtx.createGain();
+  const filt = audioCtx.createBiquadFilter();
+  osc.type = 'sawtooth';
+  osc.frequency.value = freq;
+  filt.type = 'lowpass';
+  filt.frequency.setValueAtTime(600, t);
+  filt.frequency.linearRampToValueAtTime(200, t + 0.22);
+  filt.Q.value = 4;
+  g.gain.setValueAtTime(0.38, t);
+  g.gain.exponentialRampToValueAtTime(0.001, t + 0.24);
+  osc.connect(filt); filt.connect(g); g.connect(masterGain);
+  osc.start(t); osc.stop(t + 0.25);
+}
+
+// ── Lead synth (minimal house melody, 4-bar phrase) ──
+// Semitones from A4 (440): punchy stabs
+const LEAD_PATTERN = [
+  [0, 0, 0.18],[0, 0.75, 0.12],[3, 1.5, 0.18],[5, 2, 0.18],
+  [3, 3, 0.18],[0, 3.5, 0.12],
+  [7, 4, 0.18],[7, 4.75, 0.12],[5, 5, 0.18],[3, 6, 0.18],
+  [5, 7, 0.18],[3, 7.5, 0.12],
+];
+
+function scheduleLead(t0, barInPhrase) {
+  LEAD_PATTERN.forEach(([semi, beatOff, dur]) => {
+    const bar = Math.floor(beatOff / 4);
+    if (bar !== barInPhrase) return;
+    const localBeat = beatOff % 4;
+    const noteT = t0 + localBeat * BEAT;
+    const freq = semToFreq(semi, 440);
+    // Two oscillators slightly detuned for width
+    [-4, 4].forEach(detune => {
+      const osc  = audioCtx.createOscillator();
+      const g    = audioCtx.createGain();
+      const filt = audioCtx.createBiquadFilter();
+      osc.type = 'sawtooth';
+      osc.frequency.value = freq;
+      osc.detune.value = detune;
+      filt.type = 'lowpass'; filt.frequency.value = 2200; filt.Q.value = 2;
+      g.gain.setValueAtTime(0, noteT);
+      g.gain.linearRampToValueAtTime(0.07, noteT + 0.005);
+      g.gain.setValueAtTime(0.07, noteT + dur - 0.04);
+      g.gain.linearRampToValueAtTime(0, noteT + dur);
+      osc.connect(filt); filt.connect(g); g.connect(masterGain);
+      osc.start(noteT); osc.stop(noteT + dur + 0.02);
+    });
+  });
+}
+
+// ── Pad chord (background wash) ──
+function schedulePad(t0) {
+  // Am chord: A C E
+  [0, 3, 7].forEach(semi => {
+    const osc  = audioCtx.createOscillator();
+    const g    = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = semToFreq(semi, 220);
+    g.gain.setValueAtTime(0, t0);
+    g.gain.linearRampToValueAtTime(0.04, t0 + 0.3);
+    g.gain.setValueAtTime(0.04, t0 + BAR - 0.3);
+    g.gain.linearRampToValueAtTime(0, t0 + BAR);
+    osc.connect(g); g.connect(masterGain);
+    osc.start(t0); osc.stop(t0 + BAR + 0.05);
+  });
+}
+
+// ── Schedule one bar ──
+let globalBar = 0;
+
+function scheduleBar(t0) {
+  const b = globalBar;
+
+  // ── Kick: four-on-the-floor ──
+  for (let i = 0; i < 4; i++) kick(t0 + i * BEAT);
+
+  // ── Clap: beats 2 and 4 ──
+  clap(t0 + BEAT);
+  clap(t0 + BEAT * 3);
+
+  // ── Hi-hats: 8th notes, open on upbeats ──
+  for (let i = 0; i < 8; i++) {
+    const ht = t0 + i * BEAT * 0.5;
+    if (i % 2 === 1) openHH(ht);
+    else closedHH(ht);
+  }
+
+  // ── Bass (2-bar pattern) ──
+  const bassBar = b % 2;
+  BASS_PATTERN.forEach(([semi, beatOff]) => {
+    const bar = Math.floor(beatOff / 4);
+    if (bar !== bassBar) return;
+    scheduleBassBeat(t0 + (beatOff % 4) * BEAT, semi);
+  });
+
+  // ── Lead (2-bar phrase) ──
+  scheduleLead(t0, b % 2);
+
+  // ── Pad every bar ──
+  schedulePad(t0);
+
+  globalBar++;
+}
+
+function startBgMusic() {
+  if (!audioCtx || bgPlaying) return;
+  // Restore gain in case it was faded out
+  masterGain.gain.cancelScheduledValues(audioCtx.currentTime);
+  masterGain.gain.value = isMuted ? 0 : 0.55;
+  bgPlaying  = true;
+  globalBar  = 0;
+  loopNextTime = audioCtx.currentTime + 0.05;
+
+  // Prime 2 bars
+  scheduleBar(loopNextTime);
+  loopNextTime += BAR;
+  scheduleBar(loopNextTime);
+  loopNextTime += BAR;
+
+  loopScheduler = setInterval(() => {
+    if (!bgPlaying || !audioCtx) return;
+    while (loopNextTime < audioCtx.currentTime + LOOK_AHEAD) {
+      scheduleBar(loopNextTime);
+      loopNextTime += BAR;
+    }
+  }, 100);
+}
+
+function stopBgMusic() {
+  bgPlaying = false;
+  clearInterval(loopScheduler);
+  loopScheduler = null;
+  // Fade out quickly
+  if (audioCtx && masterGain) {
+    const now = audioCtx.currentTime;
+    masterGain.gain.cancelScheduledValues(now);
+    masterGain.gain.setValueAtTime(masterGain.gain.value, now);
+    masterGain.gain.linearRampToValueAtTime(0, now + 0.08);
+  }
+}
+
+function restartBgMusic() {
+  // Wait for fade-out, then restore gain and start
+  setTimeout(() => {
+    if (audioCtx && masterGain) {
+      masterGain.gain.cancelScheduledValues(audioCtx.currentTime);
+      masterGain.gain.value = isMuted ? 0 : 0.55;
+    }
+    startBgMusic();
+  }, 150);
+}
+
+// ── Sound FX ──
+
+function playSoundCorrect() {
+  if (!audioCtx) return;
+  const t = audioCtx.currentTime;
+  // Rising chord stab
+  [[0,0],[7,0.06],[12,0.12],[16,0.18]].forEach(([s,off]) => {
+    synthNote(semToFreq(s, 523.25), t+off, 0.22, 'triangle', 0.2, 0.005, 0.1);
+  });
+}
+
+function playSoundWrong() {
+  if (!audioCtx) return;
+  const t = audioCtx.currentTime;
+  synthNote(220, t,      0.12, 'sawtooth', 0.25, 0.002, 0.05);
+  synthNote(185, t+0.12, 0.2,  'sawtooth', 0.22, 0.002, 0.1);
+}
+
+function playSoundFail() {
+  if (!audioCtx) return;
+  const t = audioCtx.currentTime;
+  [320, 260, 210, 165, 130].forEach((f,i) => {
+    synthNote(f, t + i*0.1, 0.18, 'sawtooth', 0.28, 0.002, 0.06);
+  });
+}
+
+function playSoundWin() {
+  if (!audioCtx) return;
+  const t = audioCtx.currentTime;
+  // House-style rising arp
+  [0,4,7,12,16,19,24].forEach((s,i) => {
+    synthNote(semToFreq(s, 261.63), t + i*0.1, 0.2, 'triangle', 0.18, 0.005, 0.08);
+  });
+  // Chord hit at the end
+  setTimeout(() => {
+    const t2 = audioCtx.currentTime;
+    [0,7,12,16].forEach(s => {
+      synthNote(semToFreq(s, 261.63), t2, 0.5, 'triangle', 0.12, 0.01, 0.2);
+    });
+  }, 750);
+}
+
+// ── Urgent tick (last 10s) ──
+function playTick() {
+  if (!audioCtx || isMuted) return;
+  const t = audioCtx.currentTime;
+  synthNote(1200, t, 0.04, 'square', 0.08, 0.001, 0.02);
+}
+
+// ═══════════════════════════════════════════════════════
+// NOTE PER AL PROFESSOR
+// ═══════════════════════════════════════════════════════
+// Per canviar el contingut, exporta el teu Google Doc de NotebookLM
+// com a text pla i substitueix l'array IDIOMS de dalt.
+// Cada entrada segueix aquest format:
+// {
+//   idiom: "the idiom here",
+//   options: [
+//     "Correct sentence using the idiom.",   ← index 0 sempre és la correcta
+//     "Wrong sentence 1.",
+//     "Wrong sentence 2.",
+//     "Wrong sentence 3."
+//   ],
+//   correct: 0,
+//   explanation: "Definition of the idiom."
+// }
+// ═══════════════════════════════════════════════════════
+</script>
+</body>
+</html>
