@@ -8,6 +8,41 @@
 <meta name="apple-mobile-web-app-title" content="CH Idioms">
 <meta name="theme-color" content="#e8006e">
 <title>CH Formació – Idioms B2</title>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getDatabase, ref, push, onValue, query, orderByChild, limitToLast } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCqOnzEO-ja_PO-ZNVDV2PCFDQXo1hc67Q",
+    authDomain: "ch-idioms.firebaseapp.com",
+    databaseURL: "https://ch-idioms-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "ch-idioms",
+    storageBucket: "ch-idioms.firebasestorage.app",
+    messagingSenderId: "821453204972",
+    appId: "1:821453204972:web:2060644448d1ae4bec24c9"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db  = getDatabase(app);
+
+  window.saveScore = async function(name, score, total) {
+    const pct = Math.round((score / total) * 100);
+    await push(ref(db, 'scores'), {
+      name, score, total, pct,
+      timestamp: Date.now()
+    });
+  };
+
+  window.loadLeaderboard = function(callback) {
+    const q = query(ref(db, 'scores'), orderByChild('pct'), limitToLast(10));
+    onValue(q, snapshot => {
+      const entries = [];
+      snapshot.forEach(child => entries.push(child.val()));
+      entries.sort((a, b) => b.pct - a.pct || b.score - a.score);
+      callback(entries);
+    });
+  };
+</script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;600;700&display=swap');
 
@@ -387,42 +422,73 @@
   .option-btn:disabled { cursor: default; }
 
   /* feedback */
-  .feedback-box {
-    margin: 16px 20px 0;
+  /* ══════════════════════════════
+     FEEDBACK SCREEN
+  ══════════════════════════════ */
+  #screen-feedback {
+    padding: 0 0 32px;
+  }
+  .feedback-screen-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 28px 20px 0;
+    gap: 18px;
+  }
+  .feedback-screen-card {
+    width: 100%;
     border-radius: var(--radius);
-    padding: 18px 20px;
-    display: none;
-    animation: fadeUp .25s ease;
+    padding: 32px 24px;
     text-align: center;
   }
-  .feedback-box.show { display: block; }
-  .feedback-box.success {
+  .feedback-screen-card.success {
     background: rgba(0,184,107,0.10);
     border: 1.5px solid #00b86b;
   }
-  .feedback-box.error {
+  .feedback-screen-card.error {
     background: rgba(232,64,64,0.07);
     border: 1.5px solid #e84040;
   }
   .feedback-emoji {
-    font-size: 26px;
-    margin-bottom: 6px;
+    font-size: 52px;
     display: block;
+    margin-bottom: 12px;
   }
   .feedback-title {
-    font-size: 20px;
+    font-size: 32px;
     font-weight: 700;
-    margin-bottom: 8px;
     font-family: 'DM Serif Display', Georgia, serif;
+    margin-bottom: 10px;
   }
-  .feedback-box.success .feedback-title { color: #007a48; }
-  .feedback-box.error .feedback-title { color: #c02020; }
+  .feedback-screen-card.success .feedback-title { color: #007a48; }
+  .feedback-screen-card.error  .feedback-title { color: #c02020; }
+  .feedback-idiom {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
   .feedback-body {
-    font-size: 14px;
+    font-size: 15px;
     color: #555;
-    line-height: 1.5;
+    line-height: 1.6;
     text-align: center;
   }
+  .feedback-correct-wrap {
+    width: 100%;
+    background: var(--white);
+    border: 1.5px solid #00b86b;
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    font-size: 15px;
+    color: #007a48;
+    font-weight: 600;
+    line-height: 1.4;
+    text-align: center;
+    display: none;
+  }
+  .feedback-correct-wrap.show { display: block; }
 
   .next-btn {
     margin: 16px 20px 0;
@@ -545,6 +611,46 @@
   }
   .restart-btn:active { opacity: .85; }
 
+  /* ══ LEADERBOARD ══ */
+  .lb-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--white);
+    border: 1.5px solid #f0d0da;
+    border-radius: 14px;
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    transition: border-color .15s;
+  }
+  .lb-row.me { border-color: var(--pink); background: var(--pink-light); }
+  .lb-rank {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--muted);
+    min-width: 28px;
+    text-align: center;
+  }
+  .lb-rank.gold   { color: #f5a623; }
+  .lb-rank.silver { color: #9b9b9b; }
+  .lb-rank.bronze { color: #c47c3e; }
+  .lb-name {
+    flex: 1;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .lb-score {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--pink);
+  }
+  .lb-pct {
+    font-size: 12px;
+    color: var(--muted);
+    text-align: right;
+  }
+
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(8px); }
     to   { opacity: 1; transform: translateY(0); }
@@ -615,14 +721,34 @@
     <div class="question-label">Which sentence uses it correctly?</div>
 
     <div class="options" id="options-wrap"></div>
+  </div>
 
-    <div class="feedback-box" id="feedback-box">
-      <span class="feedback-emoji" id="feedback-emoji"></span>
-      <div class="feedback-title" id="feedback-title"></div>
-      <div class="feedback-body" id="feedback-body"></div>
+  <!-- ══ FEEDBACK ══ -->
+  <div class="screen" id="screen-feedback">
+    <div class="quiz-topbar">
+      <div class="quiz-logo">
+        <div class="ch-badge-sm">ch</div>
+        <div class="quiz-brand">
+          CH Formació
+          <span>B2 Idioms</span>
+        </div>
+      </div>
+      <div class="progress-wrap">
+        <span class="progress-num" id="fb-q-num">1/20</span>
+        <div class="score-chip" id="fb-score-chip">Score: 0</div>
+      </div>
     </div>
 
-    <button class="next-btn" id="next-btn" onclick="nextQuestion()">Next →</button>
+    <div class="feedback-screen-body" id="feedback-screen-body">
+      <div class="feedback-screen-card" id="feedback-screen-card">
+        <span class="feedback-emoji" id="feedback-emoji"></span>
+        <div class="feedback-title" id="feedback-title"></div>
+        <div class="feedback-idiom" id="feedback-idiom"></div>
+        <div class="feedback-body" id="feedback-body"></div>
+      </div>
+      <div class="feedback-correct-wrap" id="feedback-correct-wrap"></div>
+      <button class="next-btn show" id="next-btn" onclick="nextQuestion()">Next →</button>
+    </div>
   </div>
 
   <!-- ══ RESULTS ══ -->
@@ -649,7 +775,27 @@
         </div>
       </div>
     </div>
-    <button class="restart-btn" onclick="restartQuiz()">Try Again 🚀</button>
+    <button class="restart-btn" onclick="showLeaderboard()" style="margin-bottom:12px;">🏅 Leaderboard</button>
+    <button class="restart-btn" onclick="restartQuiz()" style="background:transparent;color:var(--pink);border:1.5px solid var(--pink);box-shadow:none;">Try Again 🚀</button>
+  </div>
+
+  <!-- ══ LEADERBOARD ══ -->
+  <div class="screen" id="screen-leaderboard">
+    <div class="quiz-topbar">
+      <div class="quiz-logo">
+        <div class="ch-badge-sm">ch</div>
+        <div class="quiz-brand">CH Formació <span>LEADERBOARD</span></div>
+      </div>
+    </div>
+    <div style="padding:10px 20px 32px;">
+      <div style="text-align:center;margin-bottom:20px;">
+        <div style="font-size:36px;">🏆</div>
+        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:26px;color:var(--pink);margin-top:4px;">Top Players</div>
+        <div style="font-size:12px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-top:4px;">B2 Idioms</div>
+      </div>
+      <div id="leaderboard-list"></div>
+      <button class="restart-btn" onclick="restartQuiz()" style="margin-top:24px;">Play Again 🚀</button>
+    </div>
   </div>
 
   <!-- ══ LOADING OVERLAY ══ -->
@@ -848,9 +994,8 @@ function loadQuestion() {
   });
 
   // Reset feedback
-  document.getElementById('feedback-box').className = 'feedback-box';
-  document.getElementById('next-btn').className = 'next-btn';
-
+  document.getElementById('feedback-screen-card').className = 'feedback-screen-card';
+  showScreen('screen-quiz');
   startTimer();
   restartBgMusic();
 }
@@ -860,37 +1005,44 @@ const CORRECT_MSGS = ["Awesome! 🎉", "Nailed it! ✨", "Brilliant! 🌟", "Spo
 function answer(btn, isCorrect, explanation) {
   stopTimer();
   stopBgMusic();
-  document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
 
-  const fb    = document.getElementById('feedback-box');
-  const emoji = document.getElementById('feedback-emoji');
-  const title = document.getElementById('feedback-title');
-  const body  = document.getElementById('feedback-body');
-  const next  = document.getElementById('next-btn');
+  const q = questions[current];
+  const correctText = q.shuffledOptions.find(o => o.isCorrect).text;
+
+  // Update feedback screen topbar
+  document.getElementById('fb-q-num').textContent = `${current + 1}/${QUIZ_LENGTH}`;
+
+  const card       = document.getElementById('feedback-screen-card');
+  const emoji      = document.getElementById('feedback-emoji');
+  const title      = document.getElementById('feedback-title');
+  const idiomEl    = document.getElementById('feedback-idiom');
+  const body       = document.getElementById('feedback-body');
+  const correctWrap = document.getElementById('feedback-correct-wrap');
+
+  idiomEl.textContent = `"${q.idiom}"`;
 
   if (isCorrect) {
-    btn.classList.add('correct');
     score++;
     playSoundCorrect();
-    fb.className = 'feedback-box success show';
+    card.className = 'feedback-screen-card success';
     emoji.textContent = '✅';
     title.textContent = CORRECT_MSGS[Math.floor(Math.random() * CORRECT_MSGS.length)];
-    body.textContent = '';
+    body.textContent = explanation;
+    correctWrap.className = 'feedback-correct-wrap';
   } else {
-    btn.classList.add('wrong');
     playSoundWrong();
-    document.querySelectorAll('.option-btn').forEach(b => {
-      if (questions[current].shuffledOptions.find(o => b.textContent === o.text && o.isCorrect))
-        b.classList.add('correct');
-    });
-    fb.className = 'feedback-box error show';
+    card.className = 'feedback-screen-card error';
     emoji.textContent = '❌';
     title.textContent = 'Nope!';
     body.textContent = explanation;
+    correctWrap.textContent = '✓ ' + correctText;
+    correctWrap.className = 'feedback-correct-wrap show';
   }
 
-  next.className = 'next-btn show';
+  document.getElementById('fb-score-chip').textContent = `Score: ${score}`;
   document.getElementById('score-chip').textContent = `Score: ${score}`;
+
+  showScreen('screen-feedback');
 }
 
 function nextQuestion() {
@@ -918,6 +1070,49 @@ function showResults() {
   if (pct >= 80) badge.textContent = '🏆';
   else if (pct >= 60) badge.textContent = '⭐';
   else badge.textContent = '📚';
+
+  // Save to Firebase
+  if (window.saveScore) {
+    window.saveScore(playerName, score, QUIZ_LENGTH);
+  }
+}
+
+function showLeaderboard() {
+  showScreen('screen-leaderboard');
+  const list = document.getElementById('leaderboard-list');
+  list.innerHTML = '<div style="text-align:center;color:var(--muted);padding:20px;">Loading...</div>';
+
+  if (!window.loadLeaderboard) {
+    list.innerHTML = '<div style="text-align:center;color:var(--muted);padding:20px;">Leaderboard not available.</div>';
+    return;
+  }
+
+  const medals = ['🥇','🥈','🥉'];
+  const rankClass = ['gold','silver','bronze'];
+
+  window.loadLeaderboard(entries => {
+    if (entries.length === 0) {
+      list.innerHTML = '<div style="text-align:center;color:var(--muted);padding:20px;">No scores yet. Be the first!</div>';
+      return;
+    }
+    list.innerHTML = '';
+    entries.forEach((e, i) => {
+      const isMe = e.name === playerName;
+      const rank = i < 3 ? medals[i] : `${i+1}`;
+      const rankCls = i < 3 ? rankClass[i] : '';
+      const row = document.createElement('div');
+      row.className = 'lb-row' + (isMe ? ' me' : '');
+      row.style.animation = `fadeUp .2s ease ${i*0.05}s both`;
+      row.innerHTML = `
+        <div class="lb-rank ${rankCls}">${rank}</div>
+        <div class="lb-name">${e.name}${isMe ? ' 👈' : ''}</div>
+        <div>
+          <div class="lb-score">${e.score}/${e.total}</div>
+          <div class="lb-pct">${e.pct}%</div>
+        </div>`;
+      list.appendChild(row);
+    });
+  });
 }
 
 function restartQuiz() {
