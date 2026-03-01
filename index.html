@@ -10,7 +10,7 @@
 <title>CH Formació – Idioms B2</title>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getDatabase, ref, push, onValue, query, orderByChild, limitToLast } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+  import { getDatabase, ref, push, onValue, query, orderByChild } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyCqOnzEO-ja_PO-ZNVDV2PCFDQXo1hc67Q",
@@ -34,12 +34,14 @@
   };
 
   window.loadLeaderboard = function(callback) {
-    const q = query(ref(db, 'scores'), orderByChild('pct'), limitToLast(10));
-    onValue(q, snapshot => {
+    const scoresRef = ref(db, 'scores');
+    onValue(scoresRef, snapshot => {
       const entries = [];
       snapshot.forEach(child => entries.push(child.val()));
-      entries.sort((a, b) => b.pct - a.pct || b.score - a.score);
-      callback(entries);
+      // Sort by pct desc, then score desc, then most recent first
+      entries.sort((a, b) => b.pct - a.pct || b.score - a.score || b.timestamp - a.timestamp);
+      // Keep top 10
+      callback(entries.slice(0, 10));
     });
   };
 </script>
